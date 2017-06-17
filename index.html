@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Deer Facts Validator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+  	<style>
+			.hidden {display: "none";}
+			.footer { margin-left: auto; margin-right: auto; width: 100%; text-align: center;}
+    </style>
+    <script>
+      var deerTypes = [
+      "white-tailed", "red deer", "caribou", "reindeer", "moose", "water deer", "muntjac", "axis deer", "chital deer",
+      "elk", "sika deer", "eld's deer", "sambar deer", "visayan spotted deer", "fallow deer", "key deer", "mule deer",
+      "pampas deer", "pudu", "roe deer", "deer"
+      ];
+			if(typeof(String.prototype.trim) === "undefined") {
+		    String.prototype.trim = function() {
+	        return String(this).replace(/^\s+|\s+$/g, '');
+      	};
+			}
+      var containsFact = function(factText) {
+      	if (factText === null) return false;
+        else if (factText.split(' ').length < 3) return false;
+        factText = factText.trim().toLowerCase();
+	      for (type in deerTypes) {
+      		let re = new RegExp(deerTypes[type]);
+          if (re.test(factText)) return true;
+  	  	}
+      	return false;
+      }
+      document.addEventListener("DOMContentLoaded", function() {
+
+      	var checkBtn = document.querySelector('[role="fact-check-btn"]');
+      	var textBox = document.querySelector("#factinput");
+      	var alertTrue = document.querySelector("#alert-fact-true");
+      	var alertFalse = document.querySelector("#alert-fact-false");
+      
+      	checkBtn.addEventListener("click", function(e) {
+      		if (containsFact(textBox.value)) {
+      		  alertTrue.classList.toggle("hidden", false);
+	    		  alertFalse.classList.toggle("hidden", true);
+      	  } else {
+      		  alertTrue.classList.toggle("hidden", true);
+	    		  alertFalse.classList.toggle("hidden", false);
+      	  }
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <div class="container">
+      <div class="page-header">
+        <h1>Deer Facts Fact Validator<br><small>Determining deer fact from not</small></h1>
+      </div>
+      <div class="about">
+        <h2>About:</h2>
+        <p>With our new technology, you too can now validate that your facts are deer related. Simply paste any text
+          in the box below, and we will tell you if it's a deer fact or not!</p>
+      </div>
+      <div class="form-group form-group-lg">
+        <label for="factinput">Paste fact here:</label>
+        <textarea class="form-control" rows="5" id="factinput"></textarea>
+        <button type="button" class="btn btn-success" role="fact-check-btn">Check Fact!</button>
+      </div>
+      <div class="hidden alert alert-success" role="alert" id="alert-fact-true">This is a valid deer fact!</div>
+      <div class="hidden alert alert-danger" role="alert" id="alert-fact-false">This unfortunately is not a deer fact :(</div>
+
+			<footer class="footer">
+				<div>Fact validity not guaranteed.</div>
+			</footer>
+    </div>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <!--script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script-->
+  </body>
+</html>
