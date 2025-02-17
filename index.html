@@ -19,16 +19,8 @@
 	        return String(this).replace(/^\s+|\s+$/g, '');
       	};
 			}
-      var containsFact = function(factText) {
-      	if (factText === null) return false;
-        else if (factText.split(' ').length < 3) return false;
-        factText = factText.trim().toLowerCase();
-	      for (type in deerTypes) {
-      		let re = new RegExp(deerTypes[type]);
-          if (re.test(factText)) return true;
-  	  	}
-      	return false;
-      }
+      // Remove or comment out the existing containsFact function and its related code
+      
       document.addEventListener("DOMContentLoaded", function() {
 
       	var checkBtn = document.querySelector('[role="fact-check-btn"]');
@@ -36,14 +28,41 @@
       	var alertTrue = document.querySelector("#alert-fact-true");
       	var alertFalse = document.querySelector("#alert-fact-false");
       
-      	checkBtn.addEventListener("click", function(e) {
-      		if (containsFact(textBox.value)) {
-      		  alertTrue.classList.toggle("hidden", false);
-	    		  alertFalse.classList.toggle("hidden", true);
-      	  } else {
-      		  alertTrue.classList.toggle("hidden", true);
-	    		  alertFalse.classList.toggle("hidden", false);
-      	  }
+      	checkBtn.addEventListener("click", async function(e) {
+            try {
+                checkBtn.disabled = true;  // Disable button while processing
+                const response = await fetch('http://localhost:5000/validate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({fact: textBox.value})
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const result = await response.json();
+                console.log('Response:', result);  // Add debugging
+                
+                if (result.valid) {
+                    alertTrue.textContent = `This is a valid deer fact! ${result.explanation}`;
+                    alertTrue.classList.remove("hidden");
+                    alertFalse.classList.add("hidden");
+                } else {
+                    alertFalse.textContent = `This is not a deer fact: ${result.explanation}`;
+                    alertTrue.classList.add("hidden");
+                    alertFalse.classList.remove("hidden");
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alertFalse.textContent = `Error: ${error.message}`;
+                alertTrue.classList.add("hidden");
+                alertFalse.classList.remove("hidden");
+            } finally {
+                checkBtn.disabled = false;  // Re-enable button
+            }
         });
       });
     </script>
